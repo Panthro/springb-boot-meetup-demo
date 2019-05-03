@@ -7,25 +7,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import meetups.rafa.springbootdemo.domain.Hero;
+import meetups.rafa.springbootdemo.repository.HeroRepository;
 
 @RestController
 public class HeroController {
 
-    private List<Hero> heroes = new ArrayList<>();
+    private final HeroRepository heroRepository;
+
+    public HeroController(HeroRepository heroRepository) {
+        this.heroRepository = heroRepository;
+    }
 
     @PostMapping("/heroes")
     public ResponseEntity<Hero> createHero(@RequestBody Hero hero) {
-        heroes.add(hero);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(heroRepository.save(hero), HttpStatus.CREATED);
     }
 
     @GetMapping("/heroes")
-    public ResponseEntity<List<Hero>> getHeroes(){
-        return ResponseEntity.ok(heroes);
+    public ResponseEntity<List<Hero>> getHeroes() {
+        return ResponseEntity.ok(heroRepository.findAll());
     }
 
 
